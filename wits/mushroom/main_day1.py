@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 12 14:24:58 2021
-
 Mushroom Data - Machine Learning Classification
 
-@author: john.atherfold
+@author: Michael Angelozzi
 """
 
 #%% 0. Import the python libraries you think you'll require

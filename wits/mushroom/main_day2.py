@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 12 14:24:58 2021
-
 Mushroom Data - Machine Learning Classification
 
-@author: john.atherfold
+@author: Michael Angelozzi
 """
 
 #%% 0. Import the python libraries you think you'll require
@@ -15,6 +13,7 @@ from sklearn import tree
 from sklearn import metrics
 from scipy import stats
 from sklearn.model_selection import KFold
+from skopt import BayesSearchCV
 
 # Disable more than 20 plots warning
 plt.rcParams.update({'figure.max_open_warning': 0})
@@ -129,11 +128,29 @@ print(f"\nMODEL")
 print(f"Confusion matrix: {confusion_matrix}")
 print(f"The accuracy is {round(accuracy*100, 2)}%")
 
+# LOOKING FOR OPTIMAL HYPER PARAMS ____________________________________________
+# Use Search
+# Refer to: https://scikit-optimize.github.io/stable/modules/generated/skopt.BayesSearchCV.html
+model = tree.DecisionTreeClassifier()
+params = {
+    'criterion': ['gini', 'entropy'],
+    'min_samples_leaf': np.arange(1,31),
+}
+# Will try 10 difference combinations of parameters and return best result
+opt = BayesSearchCV(model, params, cv=cvo, n_iter=10, verbose=5)
+search_results = opt.fit(x_train, y_train == 'p')
+print(search_results.best_params_) # criterion: entropy, min_samples_leaf: 5
+breakpoint()
+
+
+
+
+
 #%% 6. Compare your Model to the Baseline
 #   Use the appropriate performance metrics where appropriate.
 #   Classification - Accuracy, Precision, Recall, F1 score, AUC, ROC, etc.
 #   Regression - MSE, Error distributions, R-squared
-model = tree.DecisionTreeClassifier()
+model = tree.DecisionTreeClassifier(**search_results.best_params_)
 model.fit(x_train, y_train == 'p')
 y_hat_test = model.predict(x_test)
 test_confusion_matrix = metrics.confusion_matrix(y_test == 'p', y_hat_test)
