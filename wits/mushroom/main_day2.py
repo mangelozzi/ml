@@ -140,11 +140,6 @@ params = {
 opt = BayesSearchCV(model, params, cv=cvo, n_iter=10, verbose=5)
 search_results = opt.fit(x_train, y_train == 'p')
 print(search_results.best_params_) # criterion: entropy, min_samples_leaf: 5
-breakpoint()
-
-
-
-
 
 #%% 6. Compare your Model to the Baseline
 #   Use the appropriate performance metrics where appropriate.

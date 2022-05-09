@@ -138,11 +138,13 @@ for i_train, i_valid in cvo.split(x_train_valid):
     x_valid_split_cats  = x_valid_split.iloc[:, logical_categorical_columns]  # categoricals
     x_valid_split_conts = x_valid_split.iloc[:, ~logical_categorical_columns]  # continuous
 
+    # We find the mean and std deviation using only our training data, then apply the same z-score transformation to our validation data
     scaler = preprocessing.StandardScaler().fit(x_train_split_conts)
     x_train_scaled = scaler.transform(x_train_split_conts)
     x_valid_scaled = scaler.transform(x_valid_split_conts)
 
     # Principal component analysis, reduce dimensionality, pull out co-linearity (features that are linearly dependant)
+    # We find the PCA components only our training data, then reduce both the training and validation data using those ocmponents (treat the validation data as unknowns at this point in time like training data)
     pca = decomposition.PCA().fit(x_train_scaled)
     x_train_pcs = pca.transform(x_train_scaled)
     x_valid_pcs = pca.transform(x_valid_scaled)
